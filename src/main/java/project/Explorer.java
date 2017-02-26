@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +30,27 @@ import java.util.regex.Pattern;
  * Created by svkreml on 26.02.2017.
  */
 public class Explorer {
+    public void saveTextArea() {
+        //todo сохранение текущей вкладки
+        MyTab tab = (MyTab) redactorTabs.getSelectionModel().getSelectedItem();
+        Path path = ((AnyInfo) tab.getTreeItem().getValue()).getPath();
+        CodeArea textArea = (CodeArea)((VirtualizedScrollPane)((StackPane)tab.getContent()).getChildren().get(0)).getContent();
+        try {
+            Files.write(path, textArea.getText().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void saveTextArea(MyTab tab) {
+        //todo сохранение текущей вкладки
+        Path path = ((AnyInfo) tab.getTreeItem().getValue()).getPath();
+        CodeArea textArea = (CodeArea)((VirtualizedScrollPane)((StackPane)tab.getContent()).getChildren().get(0)).getContent();
+        try {
+            Files.write(path, textArea.getText().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private static final Pattern XML_TAG = Pattern.compile("(?<ELEMENT>(</?\\h*)(\\w+)([^<>]*)(\\h*/?>))"
             + "|(?<COMMENT><!--[^<>]+-->)");
     private static final Pattern ATTRIBUTES = Pattern.compile("(\\w+\\h*)(=)(\\h*\"[^\"]+\")");
@@ -50,6 +72,9 @@ public class Explorer {
     boolean loopBlocker = false;
     TreeItem<AnyInfo> rootItem = null;
     private TreeItem<AnyInfo> dragging = null;
+
+    public Explorer() {
+    }
 
     public Explorer(TreeView treeView, TabPane redactorTabs) {
         this.treeView = treeView;
@@ -314,6 +339,9 @@ public class Explorer {
     }
 
     public void openProject(Path directory) throws IOException {
+        if(Files.isDirectory(directory))
+        rootItem = loadFolders(directory);
+        else
         rootItem = loadFolders(directory.getParent());
         treeView.setRoot(rootItem);
         treeView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> updateSelectedItem(newValue));
@@ -343,6 +371,9 @@ public class Explorer {
                 file.setTab(myTab);
                 myTab.setOnCloseRequest(arg0 -> {
                     MyTab cTab = (MyTab) arg0.getTarget();
+                    selectionModelTabs.select(cTab);
+                    if(saveDialog())
+                        saveTextArea();
                     cTab.getFileInfo().setOpened(false);
                     cTab.getFileInfo().setTab(null);
                 });
@@ -439,5 +470,27 @@ public class Explorer {
             return v1.getName().compareToIgnoreCase(v2.getName());
         });
     }
+public boolean saveDialog(){
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Закрытие файла");
+    alert.setHeaderText("Файл будет закрыт");
+    alert.setContentText("Сохранить изменения?");
+    ButtonType yes = new ButtonType("Да", ButtonBar.ButtonData.YES);
+    ButtonType no = new ButtonType("Нет", ButtonBar.ButtonData.NO);
+    alert.getButtonTypes().setAll(yes, no);
+    Optional<ButtonType> result = alert.showAndWait();
+    if (result.get() == ButtonType.YES){
+        return true;
+    } else {
+        return false;
+    }
+}
 
+    public void setTreeView(TreeView treeView) {
+        this.treeView = treeView;
+    }
+
+    public TreeView getTreeView() {
+        return treeView;
+    }
 }

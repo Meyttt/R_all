@@ -42,4 +42,8 @@ public class TreeC {
             e.printStackTrace();
         }
     }
+
+    public Explorer getExplorer() {
+        return explorer;
+    }
 }

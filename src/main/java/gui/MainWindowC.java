@@ -1,6 +1,5 @@
 package gui;
 
-import filesystem.AnyInfo;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,21 +10,18 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.fxmisc.flowless.VirtualizedScrollPane;
-import org.fxmisc.richtext.CodeArea;
+import project.Explorer;
 import project.LastOpened;
 import project.MyTab;
 import project.ProjectR;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.List;
 
 /**
  * Created by svkreml on 26.02.2017.
@@ -38,6 +34,8 @@ public class MainWindowC {
     TextArea testTextArea;
     @FXML
     TabPane redactorTabs;
+    TreeC treeController;
+    Explorer explorer;
     @FXML
     private TextFlow errorConsole;
     @FXML
@@ -104,22 +102,33 @@ public class MainWindowC {
         treeController.setRedactorTabs(redactorTabs);
         treeController.setExplorer();
         treeController.openProject(projectDirectory.toPath());
+        explorer = treeController.getExplorer();
     }
 
     public void openPrLast(ActionEvent actionEvent) {
         File projectDirectory = LastOpened.load();
         mainApp.setProjectR(new ProjectR(projectDirectory));
-        TreeC treeController = mainApp.getTreeController();
+        treeController = mainApp.getTreeController();
         treeController.setRedactorTabs(redactorTabs);
         treeController.setExplorer();
         treeController.openProject(projectDirectory.toPath());
+        explorer = treeController.getExplorer();
     }
-
 
     public void handleSave(ActionEvent actionEvent) {
     }
 
     public void closeProject(ActionEvent actionEvent) {
+// FIXME: 27.02.2017 Не работает почему-то...
+        setB(false);
+        List<MyTab> tabs =(List) redactorTabs.getTabs();
+        System.out.println("tabs.size() = " + tabs.size());
+        for (int i = 0; i< tabs.size(); i++) {
+            System.out.println("tabs = " + tabs.get(i).getText());
+            if (explorer.saveDialog()) explorer.saveTextArea(tabs.get(i));
+            redactorTabs.getTabs().remove(0);
+        }
+        explorer.getTreeView().setRoot(null);
     }
 
     public void closeProgram(ActionEvent actionEvent) {
@@ -138,15 +147,7 @@ public class MainWindowC {
 
 
     public void saveTextArea(ActionEvent actionEvent) {
-        //todo сохранение текущей вкладки
-        MyTab tab = (MyTab) redactorTabs.getSelectionModel().getSelectedItem();
-        Path path = ((AnyInfo) tab.getTreeItem().getValue()).getPath();
-        CodeArea textArea = (CodeArea)((VirtualizedScrollPane)((StackPane)tab.getContent()).getChildren().get(0)).getContent();
-        try {
-            Files.write(path, textArea.getText().getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        explorer.saveTextArea();
     }
 
     public void settings(ActionEvent actionEvent) {
