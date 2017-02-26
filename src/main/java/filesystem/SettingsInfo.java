@@ -9,7 +9,7 @@ import java.nio.file.Path;
  */
 
 @JacksonXmlRootElement(localName = "file")
-public class SettingsInfo extends AnyInfo {
+public class SettingsInfo extends FileInfo {
 
     public SettingsInfo(String name, Path path) {
         super(name,path);

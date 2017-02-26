@@ -1,5 +1,6 @@
 package gui;
 
+import filesystem.AnyInfo;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,33 +11,41 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.CodeArea;
 import project.LastOpened;
+import project.MyTab;
 import project.ProjectR;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Created by svkreml on 26.02.2017.
  */
 public class MainWindowC {
     MainApp mainApp;
-
-    public AnchorPane getTreeViewPane() {
-        return treeViewPane;
-    }
-    @FXML
-    private TextFlow errorConsole;
-    @FXML
-    private AnchorPane treeViewPane;
     @FXML
     Button settingsBtn;
     @FXML
     TextArea testTextArea;
+    @FXML
+    TabPane redactorTabs;
+    @FXML
+    private TextFlow errorConsole;
+    @FXML
+    private AnchorPane treeViewPane;
+
+    public AnchorPane getTreeViewPane() {
+        return treeViewPane;
+    }
 
     public TextFlow getErrorConsole() {
         return errorConsole;
@@ -50,8 +59,6 @@ public class MainWindowC {
         return redactorTabs;
     }
 
-    @FXML
-    TabPane redactorTabs;
     public void setB(boolean bool) {
         settingsBtn.setDisable(false);
     }
@@ -86,7 +93,7 @@ public class MainWindowC {
         File defaultDirectory = new File("c:/");
         chooser.setInitialDirectory(defaultDirectory);
         chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("R-tran", "project.rtran"));
+                new FileChooser.ExtensionFilter("R-tran", "project.rpro"));
         File projectDirectory = chooser.showOpenDialog(mainApp.getPrimaryStage());
         if (projectDirectory == null) return;
         mainApp.setProjectR(new ProjectR(projectDirectory));
@@ -94,19 +101,18 @@ public class MainWindowC {
 
 
         TreeC treeController = mainApp.getTreeController();
-        try {
-            treeController.openProject(projectDirectory.toPath());
-        } catch (IOException e) {
-            return;
-            //e.printStackTrace();
-        }
-
-
-
+        treeController.setRedactorTabs(redactorTabs);
+        treeController.setExplorer();
+        treeController.openProject(projectDirectory.toPath());
     }
 
     public void openPrLast(ActionEvent actionEvent) {
-        mainApp.setProjectR(new ProjectR(LastOpened.load()));
+        File projectDirectory = LastOpened.load();
+        mainApp.setProjectR(new ProjectR(projectDirectory));
+        TreeC treeController = mainApp.getTreeController();
+        treeController.setRedactorTabs(redactorTabs);
+        treeController.setExplorer();
+        treeController.openProject(projectDirectory.toPath());
     }
 
 
@@ -132,6 +138,15 @@ public class MainWindowC {
 
 
     public void saveTextArea(ActionEvent actionEvent) {
+        //todo сохранение текущей вкладки
+        MyTab tab = (MyTab) redactorTabs.getSelectionModel().getSelectedItem();
+        Path path = ((AnyInfo) tab.getTreeItem().getValue()).getPath();
+        CodeArea textArea = (CodeArea)((VirtualizedScrollPane)((StackPane)tab.getContent()).getChildren().get(0)).getContent();
+        try {
+            Files.write(path, textArea.getText().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void settings(ActionEvent actionEvent) {

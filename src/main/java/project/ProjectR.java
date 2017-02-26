@@ -11,7 +11,7 @@ import java.io.IOException;
 public class ProjectR {
     ProjFile projFile;
     public ProjectR(File projectDirectory) {
-        if (projectDirectory.getName().equals("project.rtran")) {
+        if (projectDirectory.getName().equals("project.rpro")) {
             projFile = (ProjFile) Xml.load(projectDirectory, ProjFile.class);
             projFile.setPath(projectDirectory);
         } else {
@@ -25,7 +25,7 @@ public class ProjectR {
                 File program = new File(projectDirectory, "Программа.rtran");
                 program.createNewFile();
                 projFile = new ProjFile(projectDirectory);
-                Xml.save(new File(projectDirectory, "project.rtran"), projFile);
+                Xml.save(new File(projectDirectory, "project.rpro"), projFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }

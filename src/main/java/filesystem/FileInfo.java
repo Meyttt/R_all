@@ -9,8 +9,7 @@ import java.nio.file.Path;
  */
 @JacksonXmlRootElement(localName = "file")
 public class FileInfo extends AnyInfo {
-
     public FileInfo(String name, Path path) {
-        super(name,path);
+        super(name, path);
     }
 }
