@@ -1,0 +1,24 @@
+.tagmark {
+    -fx-fill: gray;
+}
+.anytag {
+    -fx-fill: crimson;
+}
+.paren {
+    -fx-fill: firebrick;
+    -fx-font-weight: bold;
+}
+.attribute {
+    -fx-fill: darkviolet;
+}
+.avalue {
+    -fx-fill: green;
+}
+
+.comment {
+	-fx-fill: teal;
+}
+
+.paragraph-box:has-caret {
+    -fx-background-color: #f2f9fc;
+}
