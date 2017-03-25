@@ -9,13 +9,31 @@ import javafx.scene.control.TreeItem;
  */
 public class MyTab extends Tab {
     public TreeItem treeItem;
-    boolean changed;
+    String type = "null";
+    boolean changed = false;
+    FileInfo fileInfo;
 
     public MyTab() {
         super();
-        
+
     }
-FileInfo fileInfo;
+
+    public MyTab(TreeItem treeItem) {
+        super();
+        this.treeItem = treeItem;
+    }
+
+    public void setChanged() {
+        this.changed = true;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public FileInfo getFileInfo() {
         return fileInfo;
@@ -25,15 +43,11 @@ FileInfo fileInfo;
         this.fileInfo = fileInfo;
     }
 
-    public MyTab(TreeItem treeItem) {
-        super();
-        this.treeItem = treeItem;
-    }
-    public void setTreeItem(TreeItem treeItem) {
-        this.treeItem = treeItem;
-    }
-
     public TreeItem getTreeItem() {
         return treeItem;
+    }
+
+    public void setTreeItem(TreeItem treeItem) {
+        this.treeItem = treeItem;
     }
 }

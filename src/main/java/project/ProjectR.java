@@ -10,10 +10,11 @@ import java.io.IOException;
  */
 public class ProjectR {
     ProjFile projFile;
+    File root;
     public ProjectR(File projectDirectory) {
         if (projectDirectory.getName().equals("project.rpro")) {
             projFile = (ProjFile) Xml.load(projectDirectory, ProjFile.class);
-            projFile.setPath(projectDirectory);
+            projFile.setPath(projectDirectory.getParentFile());
         } else {
             try {
                 File input = new File(projectDirectory, "Входные данные");

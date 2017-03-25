@@ -21,6 +21,17 @@ public class ProjFile {
     String path;
     @JacksonXmlProperty()
     String lentaPath;
+
+    public String getRunType() {
+        return runType;
+    }
+
+    public void setRunType(String runType) {
+        this.runType = runType;
+    }
+
+    @JacksonXmlProperty()
+    String runType;
     @JacksonXmlProperty(isAttribute = true)
     String project_name;
     public ProjFile(File projectDirectory) {
@@ -29,7 +40,7 @@ public class ProjFile {
         this.project_name = projectDirectory.getName();
         this.setLenta(false);
         this.setLentaPath("");
-        setPath(projectDirectory);
+        setPath(projectDirectory.getParentFile());
     }
     public ProjFile() {
     }

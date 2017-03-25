@@ -1,5 +1,7 @@
 package gui;
 
+import Other.StarterMain;
+import gui.help.HelpWindow;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,11 +16,13 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.xml.sax.SAXException;
 import project.Explorer;
 import project.LastOpened;
 import project.MyTab;
 import project.ProjectR;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -58,7 +62,7 @@ public class MainWindowC {
     }
 
     public void setB(boolean bool) {
-        settingsBtn.setDisable(false);
+        settingsBtn.setDisable(bool);
     }
 
     public void newProject(ActionEvent actionEvent) {
@@ -120,10 +124,10 @@ public class MainWindowC {
 
     public void closeProject(ActionEvent actionEvent) {
 // FIXME: 27.02.2017 Не работает почему-то...
-        setB(false);
-        List<MyTab> tabs =(List) redactorTabs.getTabs();
+        setB(true);
+        List<MyTab> tabs = (List) redactorTabs.getTabs();
         System.out.println("tabs.size() = " + tabs.size());
-        for (int i = 0; i< tabs.size(); i++) {
+        for (int i = 0; i < tabs.size(); i++) {
             System.out.println("tabs = " + tabs.get(i).getText());
             if (explorer.saveDialog()) explorer.saveTextArea(tabs.get(i));
             redactorTabs.getTabs().remove(0);
@@ -135,6 +139,7 @@ public class MainWindowC {
     }
 
     public void help(ActionEvent actionEvent) {
+        new HelpWindow(mainApp, null);
     }
 
     public void about(ActionEvent actionEvent) {
@@ -144,7 +149,6 @@ public class MainWindowC {
         alert.setContentText("версия 1.0.0\nИВБО-03-13 МИРЭА кафедра ВОСХОД");
         alert.showAndWait();
     }
-
 
     public void saveTextArea(ActionEvent actionEvent) {
         explorer.saveTextArea();
@@ -178,4 +182,35 @@ public class MainWindowC {
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
     }
+
+    @FXML
+    public void debugRmachine(ActionEvent actionEvent) {
+        runM(true);
+    }
+
+    @FXML
+    public void runRmachine(ActionEvent actionEvent) {
+        runM(false);
+    }
+
+    private void runM(boolean debugType) {
+        String lenta = mainApp.getProjectR().getProjFile().getLentaPath();
+        if (lenta == null || lenta.equals("")) lenta = null;
+        System.out.println(mainApp.getProjectR().getProjFile().getPath() + "\\Программа.rtran");
+        System.out.println(lenta);
+        try {
+            //костыль
+            lenta = "perfectapple#";
+            StarterMain starterMain = new StarterMain(mainApp.getProjectR().getProjFile().getPath() + "\\Программа.rtran", debugType, lenta);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
+//perfectapple#
