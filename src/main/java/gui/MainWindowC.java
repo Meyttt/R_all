@@ -207,10 +207,7 @@ public class MainWindowC {
         //костыль
         lenta = "perfectapple#";
         try {
-            this.mainApp.getPrimaryStage().hide();
-            this.mainApp.getPrimaryStage().close();
             StarterMain starterMain = new StarterMain(mainApp.getProjectR().getProjFile().getPath() + "\\Программа.rtran", debugType, lenta, this.mainApp.getPrimaryStage());
-            starterMain.start();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {
