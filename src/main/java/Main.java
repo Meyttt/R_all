@@ -9,6 +9,6 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) throws IOException, SAXException, ParserConfigurationException {
-        StarterMain starterMain = new StarterMain("F:\\Users\\svkreml\\Desktop\\templateStrorageTest.xml1",false,"perfectapple#");
+        //StarterMain starterMain = new StarterMain("F:\\Users\\svkreml\\Desktop\\templateStrorageTest.xml1",false,"perfectapple#");
     }
 }

@@ -137,12 +137,16 @@ public class Explorer {
         spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
         return spansBuilder.create();
     }
-
+    Path newName(Path oldName, String newNameString) throws IOException {
+        return Files.move(oldName, oldName.resolveSibling(newNameString));
+    }
     private Object setCellFactory(TreeView treeView) {
 
         TextFieldTreeCell<AnyInfo> cell = new TextFieldTreeCell<AnyInfo>() {
+            String oldName;
             @Override
             public void startEdit() {
+                oldName=getText();
                 if (getTreeItem().getParent() == null || getTreeItem().getParent().getParent() == null)
                     return;
                 super.startEdit();
@@ -150,8 +154,15 @@ public class Explorer {
 
             @Override
             public void commitEdit(AnyInfo anyInfo) {
-                super.commitEdit(anyInfo);
-                //anyInfo.
+                if(anyInfo instanceof FileInfo) {
+                    try {
+                        newName(anyInfo.getPath(),getText());
+                        anyInfo.getTab().setText(getText());
+                        super.commitEdit(anyInfo);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                         //fixme сделать красиво
             }
         };

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import xml.Xml;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by svkreml on 20.11.2016.
@@ -82,7 +84,7 @@ public class ProjFile {
     }
 
     public void save() {
-        Xml.save(getPath(),this);
+        Xml.save(new File(getPath().toString(),"project.rpro"),this);
     }
 
 

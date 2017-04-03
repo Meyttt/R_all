@@ -25,6 +25,9 @@ import project.ProjectR;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -197,20 +200,29 @@ public class MainWindowC {
         String lenta = mainApp.getProjectR().getProjFile().getLentaPath();
         if (lenta == null || lenta.equals("")) lenta = null;
         System.out.println(mainApp.getProjectR().getProjFile().getPath() + "\\Программа.rtran");
-        System.out.println(lenta);
+/*        System.out.println(lenta);
         try {
-            //костыль
-            lenta = "perfectapple#";
-            StarterMain starterMain = new StarterMain(mainApp.getProjectR().getProjFile().getPath() + "\\Программа.rtran", debugType, lenta);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
+            lenta=readFile(mainApp.getProjectR().getProjFile().getPath().toString()+"\\"+lenta,Charset.defaultCharset());
         } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+        //костыль
+        lenta = "perfectapple#";
+        try {
+            StarterMain starterMain = new StarterMain(mainApp.getProjectR().getProjFile().getPath() + "\\Программа.rtran", debugType, lenta);
+            starterMain.start();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
+    static String readFile(String path, Charset encoding)
+            throws IOException
+    {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
+    }
 
 }
 //perfectapple#
