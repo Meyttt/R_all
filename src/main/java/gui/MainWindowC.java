@@ -16,13 +16,11 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.xml.sax.SAXException;
 import project.Explorer;
 import project.LastOpened;
 import project.MyTab;
 import project.ProjectR;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -209,7 +207,9 @@ public class MainWindowC {
         //костыль
         lenta = "perfectapple#";
         try {
-            StarterMain starterMain = new StarterMain(mainApp.getProjectR().getProjFile().getPath() + "\\Программа.rtran", debugType, lenta);
+            this.mainApp.getPrimaryStage().hide();
+            this.mainApp.getPrimaryStage().close();
+            StarterMain starterMain = new StarterMain(mainApp.getProjectR().getProjFile().getPath() + "\\Программа.rtran", debugType, lenta, this.mainApp.getPrimaryStage());
             starterMain.start();
         } catch (InterruptedException e) {
             e.printStackTrace();
